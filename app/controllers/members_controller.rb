@@ -25,7 +25,7 @@ class MembersController < ApplicationController
 
   def show
     respond_to do |format|
-      format.json {render json: @member.to_json}
+      format.json # {render json: @member.to_json}
     end
   end
 

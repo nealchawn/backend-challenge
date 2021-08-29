@@ -53,11 +53,20 @@ describe 'Members', type: :request do
 
   describe 'viewing a member' do
     context 'when member exists' do
-      subject { get "/members/#{create(:member).id}", headers: headers }
+      subject { get "/members/#{member.id}", headers: headers }
+      let(:member) {create(:member)}
 
       it 'returns the correct status code' do
         subject
         expect(response).to have_http_status(:success)
+      end
+
+      it "returns the correct data" do
+        subject
+
+        data = JSON.parse(response.body)
+        expect(data.keys).to match(['name', 'url', 'short_url'])
+        expect(data.except('short_url').values).to match([member.full_name, member.url])
       end
     end
 
@@ -85,6 +94,6 @@ describe 'Members', type: :request do
       create(:member)
       create(:member)
     end
-
   end
+
 end
