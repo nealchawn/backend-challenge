@@ -13,7 +13,10 @@ describe 'Members', type: :request do
           member: {
             first_name: 'Sandi',
             last_name: 'Metz',
-            url: 'http://www.example.com'
+            url: 'http://www.example.com',
+            email: 'chawnneal@gmail.com',
+            password: 'password',
+            password_confirmation: 'password',
           }
         }
       end
