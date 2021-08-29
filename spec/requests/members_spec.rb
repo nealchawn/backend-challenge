@@ -70,4 +70,21 @@ describe 'Members', type: :request do
       end
     end
   end
+
+  describe 'viewing a short link' do
+    subject {get "#{member.short_url}", headers: headers}
+    let(:member) {create(:member)}
+
+    it 'redirects to the original url' do
+      generate_dummy_members
+      subject
+      expect(response).to redirect_to(member.url)
+    end
+
+    def generate_dummy_members
+      create(:member)
+      create(:member)
+    end
+
+  end
 end

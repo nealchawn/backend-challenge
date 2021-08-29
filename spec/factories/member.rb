@@ -5,5 +5,6 @@ FactoryBot.define do
         sequence(:email) { |i| "email#{i}@gmail.com"}
         password {"password"}
         password_confirmation {"password"}
+        url {"http://example.com/"}
     end
 end

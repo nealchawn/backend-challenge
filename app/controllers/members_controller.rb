@@ -29,6 +29,13 @@ class MembersController < ApplicationController
     end
   end
 
+  def personal_url
+    unique_key = params[:unique_key]
+
+    original_url = Member.get_original_url(unique_key: unique_key)
+    redirect_to original_url
+  end
+
 
   private
 
