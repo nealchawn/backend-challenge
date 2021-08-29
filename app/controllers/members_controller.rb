@@ -1,4 +1,6 @@
 class MembersController < ApplicationController
+  before_action :set_member, only: [:show]
+
   def index
     @members = Member.all.order(:last_name)
     respond_to do |format|
@@ -21,8 +23,20 @@ class MembersController < ApplicationController
         render json: { error: "Bad Parameters"}, status: 400
   end
 
+  def show
+    respond_to do |format|
+      format.json {render json: @member.to_json}
+    end
+  end
+
 
   private
+
+  def set_member
+    @member = Member.find(params[:id] || params[:member_id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: "Member Not Found"}, status: 400
+  end
 
   def member_params
       params.require(:member).permit(:email, :first_name, :last_name, :password, :password_confirmation, :url)

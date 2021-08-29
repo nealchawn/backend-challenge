@@ -53,7 +53,7 @@ describe 'Members', type: :request do
 
   describe 'viewing a member' do
     context 'when member exists' do
-      subject { get "/members/#{Member.first.id}", headers: headers }
+      subject { get "/members/#{create(:member).id}", headers: headers }
 
       it 'returns the correct status code' do
         subject
