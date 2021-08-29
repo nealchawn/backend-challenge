@@ -61,7 +61,7 @@ describe 'Members', type: :request do
       end
     end
 
-    context 'when member not fond' do
+    context 'when member not found' do
       subject { get '/members/0', headers: headers }
 
       it 'returns the correct status code' do
