@@ -60,4 +60,22 @@ RSpec.describe Member, type: :model do
     end
   end
 
+  describe "#friends?(member_id: )" do
+    subject{create(:member)}
+    let(:member_2) {create(:member)}
+    
+    context "when member is a friend" do
+      it "returns true" do
+        create(:friendship, member_id: subject.id, friend_id: member_2.id)
+        expect(subject.friends?(member_id: member_2.id)).to eq(true)
+      end
+    end
+
+    context "when member is not a friend" do
+      it "returns false" do
+        expect(subject.friends?(member_id: member_2.id)).to eq(false)
+      end
+    end
+  end
+
 end

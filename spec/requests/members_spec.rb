@@ -121,5 +121,90 @@ describe 'Members', type: :request do
       create(:member)
     end
   end
+  
+  describe 'get experts path' do
+    let(:member) {create(:member)}
+    let!(:m2) {create(:member)}
+    let!(:m3) {create(:member)}
+    subject { get "/members/#{member.id}/experts", params: params, headers: headers }
+
+    let(:params) do
+      {
+        search: "header"
+      }
+    end
+
+    it 'returns the path for each expert' do
+      setup_friendships
+      subject
+      expect(JSON.parse(response.body)).to eq(JSON.parse(paths_data))
+    end
+
+    it 'returns path to self if no relationship exists, but there is an expert' do
+      subject
+      expect(JSON.parse(response.body)).to eq(JSON.parse([
+        {
+          expert_id: m2.id,
+          expert_name: m2.full_name,
+          path: [m2.id]
+        },
+        {
+          expert_id: m3.id,
+          expert_name: m3.full_name,
+          path: [m3.id]
+        }
+      ].to_json))
+    end
+
+    it 'returns the best path for each expert' do
+      setup_friendships_best
+      subject
+      expect(JSON.parse(response.body)).to eq(JSON.parse([
+        {
+          expert_id: m2.id,
+          expert_name: m2.full_name,
+          path: [ member.id, m2.id]
+        },
+        {
+          expert_id: m3.id,
+          expert_name: m3.full_name,
+          path: [ member.id, m3.id]
+        }
+      ].to_json))
+    end
+
+    it 'returns empty array if there are no experts' do
+      get "/members/#{member.id}/experts", params: {search: "bad search"}, headers: headers
+      expect(JSON.parse(response.body)).to eq([])
+    end
+
+    
+
+    def paths_data
+      [
+        {
+          expert_id: m2.id,
+          expert_name: m2.full_name,
+          path: [ member.id, m2.id]
+        },
+        {
+          expert_id: m3.id,
+          expert_name: m3.full_name,
+          path: [ member.id, m2.id, m3.id]
+        }
+      ].to_json
+    end
+
+    def setup_friendships
+      create(:friendship, member: m2, friend: member)
+      create(:friendship, member: m2, friend: m3)
+    end
+
+    def setup_friendships_best
+      create(:friendship, member: m2, friend: member)
+      create(:friendship, member: m2, friend: m3)
+      create(:friendship, member: member, friend: m3)
+    end
+  end
 
 end

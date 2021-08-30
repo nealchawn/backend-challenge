@@ -41,6 +41,10 @@ class Member < ApplicationRecord
     first_name+" "+last_name
   end
 
+  def friends?(member_id:)
+    self.friends.map(&:id).include?(member_id)
+  end
+
   private
 
   def generate_url_topics
