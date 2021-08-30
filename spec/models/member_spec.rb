@@ -49,4 +49,15 @@ RSpec.describe Member, type: :model do
     end
   end
 
+  describe 'friendships' do
+    subject { create(:member)}
+    let(:member_2) {create(:member)}
+
+    it 'has_many member friends' do
+      create(:friendship, member_id: subject.id, friend_id: member_2.id)
+
+      expect(subject.friends).to include(member_2)
+    end
+  end
+
 end

@@ -9,6 +9,8 @@ class Member < ApplicationRecord
   validates :password_confirmation, :url, presence: true
   
   has_many :topics
+  has_many :Friendships
+  has_many :friends, through: :Friendships
 
   # validate :url_format
   after_create :generate_url_topics
@@ -50,7 +52,7 @@ class Member < ApplicationRecord
 
   def get_url_topics
     doc = Nokogiri::HTML(open(self.url))
-    doc.css("h1, h2, h3").map{|e| e.text}
+    doc.css("h1, h2, h3").map(&:text) # {|e| e.text}
   end
 
 end
