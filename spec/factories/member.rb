@@ -5,6 +5,7 @@ FactoryBot.define do
         sequence(:email) { |i| "email#{i}@gmail.com"}
         password {"password"}
         password_confirmation {"password"}
-        url {"http://example.com/"}
+        # url {"http://example.com/"}
+        url {File.join(Rails.root,'spec','fixtures','test.xml')}
     end
 end
