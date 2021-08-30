@@ -146,12 +146,14 @@ describe 'Members', type: :request do
         {
           expert_id: m2.id,
           expert_name: m2.full_name,
-          path: [m2.id]
+          path: [m2.id],
+          path_formatted: m2.first_name
         },
         {
           expert_id: m3.id,
           expert_name: m3.full_name,
-          path: [m3.id]
+          path: [m3.id],
+          path_formatted: m3.first_name
         }
       ].to_json))
     end
@@ -163,12 +165,14 @@ describe 'Members', type: :request do
         {
           expert_id: m2.id,
           expert_name: m2.full_name,
-          path: [ member.id, m2.id]
+          path: [ member.id, m2.id],
+          path_formatted: [ member.first_name, m2.first_name].join(" -> ")
         },
         {
           expert_id: m3.id,
           expert_name: m3.full_name,
-          path: [ member.id, m3.id]
+          path: [ member.id, m3.id],
+          path_formatted: [ member.first_name, m3.first_name].join(" -> ")
         }
       ].to_json))
     end
@@ -185,12 +189,14 @@ describe 'Members', type: :request do
         {
           expert_id: m2.id,
           expert_name: m2.full_name,
-          path: [ member.id, m2.id]
+          path: [ member.id, m2.id],
+          path_formatted: [ member.first_name, m2.first_name].join(" -> ")
         },
         {
           expert_id: m3.id,
           expert_name: m3.full_name,
-          path: [ member.id, m2.id, m3.id]
+          path: [ member.id, m2.id, m3.id],
+          path_formatted: [ member.first_name, m2.first_name, m3.first_name].join(" -> ")
         }
       ].to_json
     end

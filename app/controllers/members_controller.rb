@@ -37,16 +37,11 @@ class MembersController < ApplicationController
   end
 
   def experts
-    experts = Member.joins(:topics).where("topics.title ilike '%#{params["search"]}%'").group("members.id")
+    experts = get_all_topic_experts
     experts_data = []
-    experts.each do |expert|
+    experts.map do |expert|
       next if expert.id == @member.id
-      expert_data = {}
-      expert_data['expert_id'] = expert.id
-      expert_data['expert_name'] = expert.full_name
-      expert_data['path'] = best_path(paths: friendship_route(member: @member, expert: expert, path: [],paths: [])) || []
-      expert_data['path'] << expert.id
-      experts_data << expert_data
+      experts_data << generate_expert_data(member: @member, expert: expert)
     end
     respond_to do |format|
       format.json {render json: experts_data}
@@ -54,6 +49,20 @@ class MembersController < ApplicationController
   end
 
   private
+
+  def generate_expert_data(member: ,expert: )
+    path = (best_path(paths: friendship_route(member: @member, expert: expert, path: [],paths: [])) || []) << expert.id
+    {
+      'expert_id' => expert.id,
+      'expert_name' => expert.full_name,
+      'path' => path,
+      'path_formatted' => path.map{|member_id| Member.find(member_id).first_name }.join(" -> ")
+    }
+  end
+
+  def get_all_topic_experts
+    Member.joins(:topics).where("topics.title ilike '%#{params["search"]}%'").group("members.id")
+  end
 
   def best_path(paths: )
     paths.min {|a,b| a.length <=> b.length }
