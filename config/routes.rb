@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   # devise_for :members
-  resources :members
+  resources :members do
+    resources :friendships, only: [:create]
+  end
 
   get 's/:unique_key' => 'members#personal_url'
 

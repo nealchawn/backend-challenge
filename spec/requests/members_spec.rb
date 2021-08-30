@@ -39,6 +39,9 @@ describe 'Members', type: :request do
 
   describe 'viewing all members' do
     subject { get '/members', headers: headers }
+    let(:member_1){create(:member)}
+    let(:member_2){create(:member)}
+    let(:member_3){create(:member)}
 
     it 'returns the correct status code' do
       subject
@@ -48,6 +51,28 @@ describe 'Members', type: :request do
     it 'returns an array' do
       subject
       expect(body).to be_an_instance_of(Array)
+    end
+
+    it "returns the correct data" do
+      create_friendships
+      subject
+
+      data = JSON.parse(response.body)
+      expect(data.first.keys).to match(['name', 'short_url', 'total_friends'])
+      expect(data.map{|member| member.except('short_url')}).to match(JSON.parse(expected_data))
+    end
+
+    def create_friendships
+      create(:friendship, member_id: member_1.id, friend_id: member_2.id)
+      create(:friendship, member_id: member_3.id, friend_id: member_2.id)
+    end
+
+    def expected_data
+      [
+        {name: member_1.full_name ,total_friends: 1},
+        {name: member_2.full_name ,total_friends: 2},
+        {name: member_3.full_name ,total_friends: 1}
+    ].to_json
     end
   end
 
@@ -65,8 +90,9 @@ describe 'Members', type: :request do
         subject
 
         data = JSON.parse(response.body)
-        expect(data.keys).to match(['name', 'url', 'short_url'])
-        expect(data.except('short_url').values).to match([member.full_name, member.url])
+        expect(data.keys).to match(['name', 'url', 'short_url', 'topics', 'friends_urls', 'friends'])
+        
+        expect(data.except('short_url', 'friends_urls').values).to match([member.full_name, member.url, member.topics.map(&:title), member.friends])
       end
     end
 

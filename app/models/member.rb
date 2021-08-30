@@ -9,8 +9,8 @@ class Member < ApplicationRecord
   validates :password_confirmation, :url, presence: true
   
   has_many :topics
-  has_many :Friendships
-  has_many :friends, through: :Friendships
+  has_many :friendships
+  has_many :friends, through: :friendships
 
   # validate :url_format
   after_create :generate_url_topics
